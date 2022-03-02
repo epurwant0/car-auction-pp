@@ -4,7 +4,7 @@ from flask import Flask, render_template
 import sqlalchemy
 import os
 
-db_uri = os.environ.get('DATABASE_URL')
+db_uri = os.environ.get('DATABASE_URL').replace('postgres://', 'postgresql://')
 
 # Create an instance of our Flask app.
 app = Flask(__name__)
