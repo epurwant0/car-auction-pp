@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Car Auction Data</title>
+  <title>Car Auction Price Predictor</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="../static/style.css">
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -16,33 +16,33 @@
 </head>
 
 <body>
-  <div class="container-md mx-5 my-5">
+
+  <div class="container-fluid">
     <h1 class="font-weight-bold text-center">
-      Car Auction Price Predictor  
+      Car Auction Price Predictor
     </h1>
-    <hr class="my-4">
-    <div class="btn-group"> 
-      <select id="car_years_dropdown" onchange="optionChanged(this.value)"></select>
-    </div>
-    <div class="btn-group"> 
-      <select id="make_dropdown" onchange="optionChanged(this.value)"></select>
-    </div>
-    <div class="btn-group"> 
-      <select id="model_dropdown" onchange="optionChanged(this.value)"></select>
-    </div>
-    <div class="btn-group"> 
-      <select id="subseries_dropdown" onchange="optionChanged(this.value)"></select>
-    </div>
-    <div class="btn-group"> 
-      <select id="color_dropdown" onchange="optionChanged(this.value)"></select>
-    </div>
-    <div class="btn-group"> 
-      <select id="condition_grade_dropdown" onchange="optionChanged(this.value)"></select>
-    </div>
-    <div class="btn-group"> 
-      <select id="mileage_dropdown" onchange="optionChanged(this.value)"></select>
+    <div class="row">
+       <!-- Car Year -->
+       <div class="col-md-6">
+        <label>Select car_year</label>
+        <select id="car_year" class="form-control categories" onchange="optionChanged(this.id, this.value)">
+          {% for data in car_year_list %}
+            <option value="{{ data }}">{{ data }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <!-- Other Columns -->
+      {% for category in columns[1:] %}
+      <div class="col-md-6">
+        <label>Select {{ category }}</label>
+        <select id="{{ category }}" class="form-control categories" onchange="optionChanged(this.id, this.value)">
+            <option id="{{ category }}">Awaiting Input...</option>
+        </select>
+      </div>
+      {% endfor %}
     </div>
   </div>
+
 </body>
 
 </html>

@@ -1,63 +1,224 @@
-// Initialize Data
-function init() {
-    d3.json('/filters').then(function(data) {
-        // Car Years
-        let car_years = data.car_year
-        d3.select('#car_years_dropdown')
-            .selectAll('option')
-            .data(car_years).enter()
-            .append('option')
-                .text(function (d) { return d; });
+const datastore = {};
+const columns = ['car_year', 'make', 'model', 'subseries', 'color', 'condition_grade', 'mileage']
 
-        // Make
-        let make = data.make
-        d3.select('#make_dropdown')
-            .selectAll('option')
-            .data(make).enter()
-            .append('option')
-                .text(function (d) { return d; });
-
-        // Model
-        let model = data.model
-        d3.select('#model_dropdown')
-            .selectAll('option')
-            .data(model).enter()
-            .append('option')
-                .text(function (d) { return d; });
-
-        // Subseries
-        let subseries = data.subseries
-        d3.select('#subseries_dropdown')
-            .selectAll('option')
-            .data(subseries).enter()
-            .append('option')
-                .text(function (d) { return d; });
-
-        // Color
-        let color = data.color
-        d3.select('#color_dropdown')
-            .selectAll('option')
-            .data(color).enter()
-            .append('option')
-                .text(function (d) { return d; });
-
-        // Condition Grade
-        let condition_grade = data.condition_grade
-        d3.select('#condition_grade_dropdown')
-            .selectAll('option')
-            .data(condition_grade).enter()
-            .append('option')
-                .text(function (d) { return d; });
-                
-        // Mileage
-        let mileage = data.mileage
-        d3.select('#mileage_dropdown')
-            .selectAll('option')
-            .data(mileage).enter()
-            .append('option')
-                .text(function (d) { return d; });
-                
-    });
+function optionChanged(category, option) {
+    console.log(`Option: ${option}`)
+    if (category == 'car_year') {
+        for (let i = 1; i < columns.length; i++) {
+            curCol = columns[i]
+            d3.select(`#${curCol}`).selectAll('option').remove()
+            d3.select(`#${curCol}`).append('option')
+                .attr("value", `${curCol}`)
+                .text('Awaiting Input...')
+        }
+        let car_year = option
+        datastore['car_year'] = car_year;
+        d3.json(`/data/${car_year}/make`).then(function(make_list) {
+            optionChanged('make', make_list[0])
+            console.log(make_list)
+            let selector = d3.select(`#make`)
+            selector.selectAll('option').remove()
+            for (let i = 0; i < make_list.length; i++) {
+                let current_option = make_list[i]
+                selector.append('option')
+                    .attr("value", current_option)
+                    .attr("id", 'make')
+                    .text(current_option)
+            };
+        });
+    } else if (category == 'make') {
+        for (let i = 2; i < columns.length; i++) {
+            curCol = columns[i]
+            d3.select(`#${curCol}`).selectAll('option').remove()
+            d3.select(`#${curCol}`).append('option')
+                .attr("value", `${curCol}`)
+                .text('Awaiting Input...')
+        }
+        let make = option
+        datastore['make'] = make;
+        let car_year = datastore['car_year'];
+        d3.json(`/data/${car_year}/${make}/model`).then(function(model_list) {
+            optionChanged('model', model_list[0])
+            console.log(model_list)
+            let selector = d3.select(`#model`)
+            selector.selectAll('option').remove()
+            for (let i = 0; i < model_list.length; i++) {
+                let current_option = model_list[i]
+                selector.append('option')
+                    .attr("value", current_option)
+                    .attr("id", 'model')
+                    .text(current_option)
+            };
+        });
+    } else if (category == 'model') {
+        for (let i = 3; i < columns.length; i++) {
+            curCol = columns[i]
+            d3.select(`#${curCol}`).selectAll('option').remove()
+            d3.select(`#${curCol}`).append('option')
+                .attr("value", `${curCol}`)
+                .text('Awaiting Input...')
+        }
+        let model = option
+        datastore['model'] = model;
+        let car_year = datastore['car_year'];
+        let make = datastore['make'];
+        d3.json(`/data/${car_year}/${make}/${model}/subseries`).then(function(subseries_list) {
+            optionChanged('subseries', subseries_list[0])
+            console.log(subseries_list)
+            let selector = d3.select(`#subseries`)
+            selector.selectAll('option').remove()
+            for (let i = 0; i < subseries_list.length; i++) {
+                let current_option = subseries_list[i]
+                selector.append('option')
+                    .attr("value", current_option)
+                    .attr("id", 'subseries')
+                    .text(current_option)
+            };
+        });
+    } else if (category == 'subseries') {
+        for (let i = 4; i < columns.length; i++) {
+            curCol = columns[i]
+            d3.select(`#${curCol}`).selectAll('option').remove()
+            d3.select(`#${curCol}`).append('option')
+                .attr("value", `${curCol}`)
+                .text('Awaiting Input...')
+        }
+        let subseries = option
+        datastore['subseries'] = subseries;
+        let car_year = datastore['car_year'];
+        let make = datastore['make'];
+        let model = datastore['model'];
+        d3.json(`/data/${car_year}/${make}/${model}/${subseries}/info`).then(function(info_dict) {
+            console.log(info_dict)
+            // Color
+            let color_list = info_dict['color']
+            datastore['color'] = color_list[0]
+            let color_selector = d3.select(`#color`)
+            color_selector.selectAll('option').remove()
+            for (let i = 0; i < color_list.length; i++) {
+                let current_option = color_list[i]
+                color_selector.append('option')
+                    .attr("value", current_option)
+                    .attr("id", 'color')
+                    .text(current_option)
+            };
+            // Condition Grade
+            let condition_grade_list = info_dict['condition_grade']
+            datastore['condition_grade'] = condition_grade_list[0]
+            let condition_grade_selector = d3.select(`#condition_grade`)
+            condition_grade_selector.selectAll('option').remove()
+            for (let i = 0; i < condition_grade_list.length; i++) {
+                let current_option = condition_grade_list[i]
+                condition_grade_selector.append('option')
+                    .attr("value", current_option)
+                    .attr("id", 'condition_grade')
+                    .text(current_option)
+            };
+            // Mileage
+            let mileage_list = info_dict['mileage']
+            datastore['mileage'] = mileage_list[0]
+            let mileage_selector = d3.select(`#mileage`)
+            mileage_selector.selectAll('option').remove()
+            for (let i = 0; i < mileage_list.length; i++) {
+                let current_option = mileage_list[i]
+                mileage_selector.append('option')
+                    .attr("value", current_option)
+                    .attr("id", 'mileage')
+                    .text(current_option)
+            };
+        });
+    } else if ((category == 'color') || (category == 'condition_grade') || (category == 'mileage')) {
+        for (let i = 5; i < columns.length; i++) {
+            curCol = columns[i]
+            if (curCol == category) { continue }            
+            d3.select(`#${curCol}`).selectAll('option').remove()
+            d3.select(`#${curCol}`).append('option')
+                .attr("value", `${curCol}`)
+                .text('Awaiting Input...')
+        }
+        let car_year = datastore['car_year'];
+        let make = datastore['make'];
+        let model = datastore['model'];
+        let subseries = datastore['subseries'];
+        d3.json(`/data/${car_year}/${make}/${model}/${subseries}/${category}/${option}`).then(function(info_dict) {
+            if (category == 'color') {
+                // Condition Grade
+                let condition_grade_list = info_dict['condition_grade']
+                datastore['condition_grade'] = condition_grade_list[0]
+                let condition_grade_selector = d3.select(`#condition_grade`)
+                condition_grade_selector.selectAll('option').remove()
+                for (let i = 0; i < condition_grade_list.length; i++) {
+                    let current_option = condition_grade_list[i]
+                    condition_grade_selector.append('option')
+                        .attr("value", current_option)
+                        .attr("id", 'condition_grade')
+                        .text(current_option)
+                };
+                // Mileage
+                let mileage_list = info_dict['mileage']
+                datastore['mileage'] = mileage_list[0]
+                let mileage_selector = d3.select(`#mileage`)
+                mileage_selector.selectAll('option').remove()
+                for (let i = 0; i < mileage_list.length; i++) {
+                    let current_option = mileage_list[i]
+                    mileage_selector.append('option')
+                        .attr("value", current_option)
+                        .attr("id", 'mileage')
+                        .text(current_option)
+                };
+            } else if (category == 'condition_grade') {
+                // Color
+                let color_list = info_dict['color']
+                datastore['color'] = color_list[0]
+                let color_selector = d3.select(`#color`)
+                color_selector.selectAll('option').remove()
+                for (let i = 0; i < color_list.length; i++) {
+                    let current_option = color_list[i]
+                    color_selector.append('option')
+                        .attr("value", current_option)
+                        .attr("id", 'color')
+                        .text(current_option)
+                };
+                // Mileage
+                let mileage_list = info_dict['mileage']
+                datastore['mileage'] = mileage_list[0]
+                let mileage_selector = d3.select(`#mileage`)
+                mileage_selector.selectAll('option').remove()
+                for (let i = 0; i < mileage_list.length; i++) {
+                    let current_option = mileage_list[i]
+                    mileage_selector.append('option')
+                        .attr("value", current_option)
+                        .attr("id", 'mileage')
+                        .text(current_option)
+                };
+            } else if (category == 'color') {
+                // Color
+                let color_list = info_dict['color']
+                datastore['color'] = color_list[0]
+                let color_selector = d3.select(`#color`)
+                color_selector.selectAll('option').remove()
+                for (let i = 0; i < color_list.length; i++) {
+                    let current_option = color_list[i]
+                    color_selector.append('option')
+                        .attr("value", current_option)
+                        .attr("id", 'color')
+                        .text(current_option)
+                };
+                // Condition Grade
+                let condition_grade_list = info_dict['condition_grade']
+                datastore['condition_grade'] = condition_grade_list[0]
+                let condition_grade_selector = d3.select(`#condition_grade`)
+                condition_grade_selector.selectAll('option').remove()
+                for (let i = 0; i < condition_grade_list.length; i++) {
+                    let current_option = condition_grade_list[i]
+                    condition_grade_selector.append('option')
+                        .attr("value", current_option)
+                        .attr("id", 'condition_grade')
+                        .text(current_option)
+                };
+            } 
+        });
+    }
 };
 
-init();
+optionChanged('car_year', 2020);
