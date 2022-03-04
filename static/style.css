@@ -1,3 +1,12 @@
-.categories {
+/* Background */
+.container-size {
+    width: 80%;
+}
+.filter-size {
     width: 100%;
+}
+
+/* Customs */
+.result-options {
+    color:darkgreen
 }

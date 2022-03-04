@@ -17,6 +17,7 @@ engine = sqlalchemy.create_engine(db_uri)
 inspector = inspect(engine)
 tables = inspector.get_table_names()
 columns = ['car_year', 'make', 'model', 'subseries', 'color', 'condition_grade', 'mileage']
+columns_clean = ['Car Year', 'Make', 'Model', 'Subseries', 'Color', 'Condition Grade', 'Mileage']
 
 # Set route
 @app.route('/')
@@ -27,7 +28,7 @@ def index():
         data = pd.read_sql_query(f"SELECT car_year FROM {table}", con = engine)
         cars_df = pd.concat([cars_df, data], ignore_index = True)
     car_year_list = cars_df['car_year'].sort_values(ascending = False).unique().tolist()
-    return render_template('index.html', car_year_list = car_year_list, columns = columns)
+    return render_template('index.html', car_year_list = car_year_list, columns = columns, columns_clean = columns_clean)
 
 # Make
 @app.route('/data/<car_year>/make')
