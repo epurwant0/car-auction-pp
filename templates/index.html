@@ -23,17 +23,19 @@
     </h1>
     <h4 class="text-center">Team WHUPL</h4>
     <hr class="my-4">
-    <section class="py-2 text-center container">
-      <div class="row py-lg-2">
-        <div class="col-lg-3 col-md-2 mx-auto">
-          <h4>Predicted Price:</h4>
-          <h1 id="final_price" class="result-options">$xx,xxx</h1>
-          <h4>Predicted Accuracy:</h4>
-          <h2 id="final_accuracy" class="result-options">xx%</h2>
+    <div id="predictions" style="display:none">
+      <section class="py-2 text-center container">
+        <div class="row py-lg-2">
+          <div class="col-lg-3 col-md-2 mx-auto">
+            <h4>Predicted Price:</h4>
+            <h1 id="final_price" class="result-options">$xx,xxx</h1>
+            <h4>Predicted Accuracy:</h4>
+            <h2 id="final_accuracy" class="result-options">xx%</h2>
+          </div>
         </div>
-      </div>
-    </section>
-    <hr class="my-4">
+      </section>
+      <hr class="my-4">
+    </div>
     <h2 class="text-center my-3">You selected:</h2>
     <div id="final_result">
       <h4 class="text-center"></h4>
@@ -59,13 +61,12 @@
     {% endfor %}  
     </div>
     <div class="row">
-      <button type="button" class="btn btn-secondary btn-lg filter-size my-3">Predict Price</button>
+      <a href="#predictions" type="button" class="btn btn-secondary btn-lg filter-size my-3" onclick="showPredictions()">Predict Price</a>
     </div>
   </div>
   <hr class="my-4">
   <div id="tableau-visualizations" class="container-fluid container-size my-5">
-    <h2 class="text-center">Original Data Visualizations</h2>
-    <p class="text-center">[INSERT DESC]</p>
+    <h2 class="text-center">Dashboards for Car Price Prediction</h2>
     <div class='tableauPlaceholder' id='viz1646428744212' style='position: relative'><noscript><a href='#'><img alt='Car Story ' src='5R&#47;5RFRM97RY&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='path' value='shared&#47;5RFRM97RY' /> <param name='toolbar' value='yes' /><param name='static_image' value='5R&#47;5RFRM97RY&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1646428744212');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='1016px';vizElement.style.height='991px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
   </div>
 </body>

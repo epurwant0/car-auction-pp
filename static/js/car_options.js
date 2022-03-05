@@ -10,6 +10,11 @@ function showFinal() {
         .html(`${final_car}</br>${final_info}`)
 }
 
+function showPredictions() {
+    d3.select('#predictions')
+        .attr("style", "")
+}
+
 function optionChanged(category, option) {
     if (category == 'car_year') {
         for (let i = 1; i < columns.length; i++) {
